@@ -25,6 +25,18 @@
     <section id="knobs"></section>
     <section id="keyboard" class="panel" aria-label="Tastatur"></section>
     <p class="hint">Datamaskintastatur: A W S E D F T G Y H U J K O L P ; spiller toner. Z og X bytter oktav.</p>
+
+    <section id="preset-box" class="panel" hidden>
+      <div class="preset-head">
+        <strong id="preset-name">preset</strong>
+        <span class="preset-actions">
+          <button id="preset-copy" type="button">Kopier</button>
+          <button id="preset-use" type="button">Bruk teksten</button>
+          <button id="preset-close" type="button">Lukk</button>
+        </span>
+      </div>
+      <textarea id="preset-text" spellcheck="false" aria-label="Preset som XML"></textarea>
+    </section>
   </main>
 
   <div id="drop" hidden>Slipp filer her</div>

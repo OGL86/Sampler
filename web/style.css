@@ -8,6 +8,7 @@
   --accent2: #f6ad55;
   --text: #e6e8ee;
   --dim: #8b91a3;
+  color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
@@ -26,7 +27,7 @@ html, body {
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  padding: 12px;
+  padding: 12px 16px;
 }
 
 button {
@@ -43,7 +44,7 @@ button:focus-visible, .knob:focus-visible { outline: 2px solid var(--accent); ou
 
 #status { color: var(--dim); margin-left: 6px; flex: 1 1 260px; }
 
-main { padding: 0 12px 16px; display: grid; gap: 10px; max-width: 1400px; margin: 0 auto; }
+main { padding: 0 16px 16px; display: grid; gap: 10px; max-width: 1400px; margin: 0 auto; }
 
 .panel {
   background: var(--panel);
@@ -68,7 +69,7 @@ main { padding: 0 12px 16px; display: grid; gap: 10px; max-width: 1400px; margin
   padding: 8px 6px 6px;
 }
 .group h2 { margin: 0 6px 4px; font-size: 11px; letter-spacing: .04em; color: var(--dim); }
-.group .knobs { display: flex; justify-content: space-around; }
+.group .knobs { display: flex; flex-wrap: wrap; justify-content: space-around; }
 
 .knob {
   display: flex;
@@ -120,4 +121,23 @@ main { padding: 0 12px 16px; display: grid; gap: 10px; max-width: 1400px; margin
 @media (max-width: 720px) {
   .row.top { grid-template-columns: 1fr 18px; height: 150px; }
   .row.top .zones { display: none; }
+}
+
+.preset-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px 0; }
+.preset-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.preset-actions button { padding: 6px 10px; }
+#preset-text {
+  display: block;
+  width: 100%;
+  height: 120px;
+  margin: 8px 0 0;
+  padding: 10px 12px;
+  background: transparent;
+  color: var(--text);
+  border: 0;
+  border-top: 1px solid var(--edge);
+  font: 12px/1.4 ui-monospace, "Cascadia Mono", Consolas, monospace;
+  resize: vertical;
+  -webkit-user-select: text;
+  user-select: text;
 }

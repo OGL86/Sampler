@@ -225,27 +225,40 @@ function applyInstrument({ name, decoded, zones, message }) {
 // ------------------------------------------------------------------ presets
 
 function savePreset() {
-  const xml = presetToXml(values, instrument?.name);
-  const url = URL.createObjectURL(new Blob([xml], { type: 'application/xml' }));
-  const a = Object.assign(document.createElement('a'), {
-    href: url, download: `${instrument?.name ?? 'sampler'}.samplerpreset`,
-  });
-  document.body.append(a);
-  a.click();
-  a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-  setStatus('Preset lagret som ' + a.download);
+  const name = `${instrument?.name ?? 'sampler'}.samplerpreset`;
+  const text = $('preset-text');
+  text.value = presetToXml(values, instrument?.name);
+  $('preset-name').textContent = name;
+  $('preset-box').hidden = false;
+  text.focus();
+  text.select();
+
+  // Nedlasting virker ikke i alle visninger (f.eks. innebygde sider), så teksten vises alltid også.
+  try {
+    const url = URL.createObjectURL(new Blob([text.value], { type: 'application/xml' }));
+    const a = Object.assign(document.createElement('a'), { href: url, download: name });
+    document.body.append(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  } catch { /* ignoreres */ }
+  setStatus('Preset klar. Kopier teksten og lagre den som ' + name + ', eller bruk filen som ble lastet ned.');
 }
 
 async function loadPresetFile(file, currentName = instrument?.name) {
-  const parsed = parsePresetXml(await file.text());
-  if (!parsed) { setStatus('Ugyldig preset: ' + file.name); return; }
+  applyPresetText(await file.text(), file.name, currentName);
+}
+
+function applyPresetText(text, label, currentName = instrument?.name) {
+  const parsed = parsePresetXml(text);
+  if (!parsed) { setStatus('Ugyldig preset: ' + label); return; }
   for (const [id, v] of Object.entries(parsed.values)) setParam(id, v);
   knobs.refreshAll();
   const hint = parsed.instrument && parsed.instrument !== currentName
     ? `  (forventer instrumentet ${parsed.instrument})` : '';
-  setStatus('Preset lastet: ' + file.name + hint);
+  setStatus('Preset lastet: ' + label + hint);
 }
+
 
 // --------------------------------------------------------------- oppsett
 
@@ -266,6 +279,13 @@ $('btn-files').onclick = pick($('in-files'));
 $('btn-folder').onclick = pick($('in-folder'));
 $('btn-preset').onclick = pick($('in-preset'));
 $('btn-save').onclick = savePreset;
+$('preset-close').onclick = () => { $('preset-box').hidden = true; };
+$('preset-use').onclick = () => applyPresetText($('preset-text').value, 'limt inn tekst');
+$('preset-copy').onclick = async () => {
+  const text = $('preset-text');
+  try { await navigator.clipboard.writeText(text.value); setStatus('Preset kopiert.'); }
+  catch { text.focus(); text.select(); setStatus('Marker teksten og kopier den med Ctrl+C.'); }
+};
 
 for (const id of ['in-files', 'in-folder']) {
   $(id).addEventListener('change', (e) => { loadFiles([...e.target.files]); e.target.value = ''; });
