@@ -1,10 +1,26 @@
 # Sampler
 
-Standalone-sampler i C++17 med JUCE 8: polyfonisk avspilling av enkeltfiler og SFZ-instrumenter, med envelope, filter, loop, LFO, effekter, presets og disk-streaming av lange samples.
+Sampler i to versjoner med samme funksjoner og samme parametere:
 
-## Bygge
+- **Skrivebordsapp** (C++17 / JUCE 8): polyfonisk avspilling av enkeltfiler og SFZ-instrumenter, med envelope, filter, loop, LFO, effekter, presets og disk-streaming av lange samples.
+- **Nettversjon** (`web/`, Web Audio + AudioWorklet): kjører i nettleseren uten installasjon. Se [Nettversjon](#nettversjon).
+
+Presets (`.samplerpreset`) kan deles mellom de to.
+
+## Bygge skrivebordsappen
 
 Krever CMake 3.22+ og en C++17-kompilator. JUCE hentes automatisk via FetchContent.
+
+**Windows:** installer Visual Studio 2022 (eller Build Tools) med arbeidsmengden "Desktop development with C++" og CMake, og kjør i en kommandoprompt:
+
+```
+cmake -B build -G "Visual Studio 17 2022"
+cmake --build build --config Release
+```
+
+Programmet havner i `build\Sampler_artefacts\Release\Sampler.exe`.
+
+**macOS/Linux:**
 
 ```
 cmake -B build -DCMAKE_BUILD_TYPE=Release
@@ -44,6 +60,27 @@ cmake --build build --target SamplerTests
 `<control>` (`default_path`), `<global>`, `<master>`, `<group>`, `<region>` med:
 `sample`, `key`, `lokey`, `hikey`, `pitch_keycenter`, `lovel`, `hivel`, `tune`, `transpose`, `volume`, `pan`,
 `loop_mode`, `loop_start`, `loop_end`, `seq_length`, `seq_position`. Øvrige opcodes ignoreres.
+
+## Nettversjon
+
+Ligger i `web/` og er ren HTML/JavaScript uten byggesteg. AudioWorklet krever at siden serveres over http(s), så den kan ikke åpnes direkte fra filen. Lokalt:
+
+```
+cd web
+py -m http.server 8000        # Windows (på macOS/Linux: python3 -m http.server 8000)
+```
+
+Åpne deretter http://localhost:8000. Med GitHub Pages ligger den på `https://<bruker>.github.io/Sampler/` (workflowen `.github/workflows/pages.yml` publiserer `web/` ved hver push til `main`; aktiver Pages under Settings > Pages > Source: GitHub Actions).
+
+**Bruk:** Last inn filer, last inn mappe, eller slipp lydfiler, en `.sfz` sammen med samplene (eller hele mappen) i vinduet. Spill med MIDI-keyboard (Web MIDI i Chrome og Edge), skjermtastaturet eller datamaskintastaturet (A W S E D F T G Y H U J K O L P ; spiller toner, Z og X bytter oktav). Knotter: dra opp/ned (Shift for fin justering), musehjul, piltaster, dobbeltklikk nullstiller. Bølgeformen har loop-markører du kan dra, og zone-kartet viser instrumentets layout.
+
+**Forskjeller fra skrivebordsappen:**
+
+- Alle samples dekodes inn i minnet (ingen disk-streaming), og loop fungerer derfor for alle lengder.
+- SFZ-samples må leses fra filene du gir nettleseren. Stier matches mot filene du slipper eller velger, og faller tilbake til filnavn hvis mappestrukturen ikke stemmer.
+- Preset-filene lagrer instrumentnavnet i stedet for en filsti, så instrumentet må lastes inn separat.
+
+**Tester** (Node 20+, ingen avhengigheter): `node --test web/tests/engine.test.mjs`. De dekker motor, SFZ-parser, parametere og filhåndtering. Selve nettgrensesnittet er ikke dekket av automatiske tester.
 
 ## Arkitektur
 

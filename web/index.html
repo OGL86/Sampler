@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="nb">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sampler</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="bar">
+    <button id="btn-files" type="button">Last inn filer…</button>
+    <button id="btn-folder" type="button">Last inn mappe…</button>
+    <button id="btn-save" type="button">Lagre preset</button>
+    <button id="btn-preset" type="button">Last preset…</button>
+    <span id="status" role="status">Slipp lydfiler, en .sfz med samples, eller en hel mappe her</span>
+  </header>
+
+  <main>
+    <section class="row top">
+      <div class="panel wave"><canvas id="wave"></canvas><span class="title" id="wave-title"></span></div>
+      <div class="panel zones"><canvas id="zones"></canvas></div>
+      <div class="panel meter"><canvas id="meter"></canvas></div>
+    </section>
+
+    <section id="knobs"></section>
+    <section id="keyboard" class="panel" aria-label="Tastatur"></section>
+    <p class="hint">Datamaskintastatur: A W S E D F T G Y H U J K O L P ; spiller toner. Z og X bytter oktav.</p>
+  </main>
+
+  <div id="drop" hidden>Slipp filer her</div>
+
+  <input id="in-files" type="file" multiple hidden
+         accept="audio/*,.wav,.aif,.aiff,.flac,.ogg,.mp3,.sfz,.samplerpreset">
+  <input id="in-folder" type="file" webkitdirectory hidden>
+  <input id="in-preset" type="file" accept=".samplerpreset,.xml" hidden>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
